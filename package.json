@@ -11,10 +11,13 @@
     "sinon-chai": "^2.8.0"
   },
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "body-parser": "^1.16.1",
+    "mocha": "^3.2.0",
+    "supertest": "^3.0.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "examples": "mocha example/test"
   },
   "repository": {
     "type": "git",

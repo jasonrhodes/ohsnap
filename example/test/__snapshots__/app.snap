@@ -1,0 +1,50 @@
+{
+  "should get a collection of people": {
+    "status": 200,
+    "body": [
+      {
+        "id": "001",
+        "name": "Jess",
+        "age": 32
+      },
+      {
+        "id": "002",
+        "name": "Soso",
+        "age": 24
+      },
+      {
+        "id": "003",
+        "name": "Mawi",
+        "age": 40
+      }
+    ]
+  },
+  "should get a person": {
+    "status": 200,
+    "body": {
+      "id": "001",
+      "name": "Jess",
+      "age": 32
+    }
+  },
+  "should 404 when it can't find a person": {
+    "status": 404,
+    "body": {
+      "message": "Person with ID nope not found"
+    }
+  },
+  "should create a new person": {
+    "status": 201,
+    "body": {
+      "name": "Jo",
+      "age": 19,
+      "id": "004"
+    }
+  },
+  "should fail if wrong keys are used": {
+    "status": 400,
+    "body": {
+      "message": "Must provide valid keys, allowed keys are name, age"
+    }
+  }
+}
