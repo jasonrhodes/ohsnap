@@ -16,8 +16,8 @@
     "supertest": "^3.0.0"
   },
   "scripts": {
-    "test": "mocha",
-    "examples": "mocha example/test"
+    "test": "mocha ./test",
+    "examples": "mocha ./example/test"
   },
   "repository": {
     "type": "git",

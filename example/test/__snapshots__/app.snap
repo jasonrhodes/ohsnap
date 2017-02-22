@@ -4,7 +4,7 @@
     "body": [
       {
         "id": "001",
-        "name": "Jess",
+        "name": "Mark",
         "age": 32
       },
       {
@@ -27,18 +27,18 @@
       "age": 32
     }
   },
-  "should 404 when it can't find a person": {
-    "status": 404,
-    "body": {
-      "message": "Person with ID nope not found"
-    }
-  },
   "should create a new person": {
     "status": 201,
     "body": {
       "name": "Jo",
       "age": 19,
       "id": "004"
+    }
+  },
+  "should error when it can't find a person": {
+    "status": 404,
+    "body": {
+      "message": "Person with ID nope not found"
     }
   },
   "should fail if wrong keys are used": {
