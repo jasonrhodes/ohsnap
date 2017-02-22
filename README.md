@@ -1,6 +1,6 @@
 # polaroid
 
-A test snapshotting tool for API requests, based on Jest snapshot testing.
+Declarative API response snapshotting tool based on Jest snapshot testing
 
 ### Why?
 
