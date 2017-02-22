@@ -53,9 +53,9 @@ Whether or not to log messages about snapshot statuses (when a new one is create
 
 Optional string that will be printed to the console (if logging is turned on) whenever a test fails, usually to tell the user how to autofix the snapshot.
 
-**autofix** (optiona, default `false`)
+**autofix** (optional, default `false`)
 
-If true, broken snapshot tests will be rewritten and updated. You need to figure out how you want the user to do this -- in this example it's by re-running the test suite with `AUTOFIX=true` prepended.
+If true, broken snapshot tests will be rewritten and updated. You need to figure out how you want the user to do this -- in my example (below) it's by re-running the test suite with `AUTOFIX=true` prepended.
 
 ### snap()
 
@@ -98,6 +98,13 @@ If you didn't pass a `getName` function in earlier, or if you want to override i
 This is the message that `assert` will print if the snap didn't match the stored version. There's a default so this is probably not necessary.
 
 ## Example
+
+The full example is in the [example folder](/example) (right?), which you can run by cloning the repo and running:
+```
+npm install && npm run examples
+```
+
+Here's basically what the example shows, but with a real API running:
 
 ```javascript
 const app = require('../app')
