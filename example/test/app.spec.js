@@ -1,43 +1,62 @@
 const app = require('../app')
-const request = require('supertest')
 const polaroid = require('../../polaroid')
 
-describe('app example snapshot tests', function() {
+describe('example snapshot tests', function() {
 
-  let snapshot
+  let snap
 
   before(function() {
-    snapshot = polaroid(this, {
+    const { testFilePath, getName } = polaroid.mocha(this)
+    snap = polaroid({
+      app,
+      testFilePath,
+      getName,
       howToFix: 'Snapshot failed, to fix re-run with AUTOFIX=true',
       autofix: Boolean(process.env.AUTOFIX)
     })
   })
 
   it('should get a collection of people', function() {
-    return request(app).get('/example/people')
-      .then(({ status, body }) => snapshot({ status, body }))
+    return snap({
+      method: 'GET',
+      path: '/example/people'
+    })
   })
 
   it('should get a person', function() {
-    return request(app).get('/example/people/001')
-      .then(({ status, body }) => snapshot({ status, body }))
+    return snap({
+      method: 'GET',
+      path: '/example/people/001'
+    })
   })
 
-  it(`should 404 when it can't find a person`, function() {
-    return request(app).get('/example/people/nope')
-      .then(({ status, body }) => snapshot({ status, body }))
+  it(`should error when it can't find a person`, function() {
+    return snap({
+      method: 'GET',
+      path: '/example/people/nope'
+    })
   })
 
   it(`should create a new person`, function() {
-    return request(app).post('/example/people')
-      .send({ name: 'Jo', age: 19 })
-      .then(({ status, body }) => snapshot({ status, body }))
+    return snap({
+      method: 'POST',
+      path: '/example/people',
+      body: {
+        name: 'Jo',
+        age: 19
+      }
+    })
   })
 
   it(`should fail if wrong keys are used`, function() {
-    return request(app).post('/example/people')
-      .send({ name: 'Jo', weight: 150 })
-      .then(({ status, body }) => snapshot({ status, body }))
+    return snap({
+      method: 'POST',
+      path: '/example/people',
+      body: {
+        name: 'Jo',
+        weight: 150
+      }
+    })
   })
 
 })

@@ -1,17 +1,18 @@
 const assert = require('assert')
-const fs = require('fs')
-const path = require('path')
+const makeRequest = require('./lib/makeRequest')
+const { getSnapPath, getSnaps, writeSnaps } = require('./lib/snap-helpers')
 const defaults = {
+  testFilePath: false,
+  getName: () => false,
+  snapsDirectory: false,
   logging: true,
   autofix: false
 }
 
-module.exports = (_mocha, options = defaults) => {
-  const { snapsDirectory, logging = true, autofix = false } = options
-  const segments = _mocha.test.parent.file.split(path.sep)
-  const snapFile = segments.pop().replace(/(\.(spec|test))?\.js$/, '.snap')
-  const dir = snapsDirectory || path.join(path.sep, ...segments, '__snapshots__')
-  const snapFilePath = path.join(dir, snapFile)
+module.exports = (options = {}) => {
+  options = Object.assign({}, defaults, options)
+  const { app, testFilePath, getName, snapsDirectory, logging, autofix } = options
+  const snapFilePath = getSnapPath(testFilePath, snapsDirectory)
   let snaps = {}
 
   function log(...args) {
@@ -20,43 +21,35 @@ module.exports = (_mocha, options = defaults) => {
   }
 
   try {
-    snaps = JSON.parse(fs.readFileSync(snapFilePath, 'utf8'));
+    snaps = getSnaps(snapFilePath)
   } catch (err) {
-    log(`\nCreating new snapshot file ${snapFilePath}\n`)
+    log(`\nCreating new snapshot file: ${snapFilePath}\n`)
     writeSnaps(snaps, snapFilePath)
   }
 
-  return (result, message = 'Result did not match stored snapshot.') => {
-    const { title: name } = _mocha.test
-    let parsed = result
+  return (request, { name = getName(), message = 'Result did not match stored snapshot.' } = {}) => makeRequest(app, request).then(({ status, body }) => {
+    const result = { status, body }
+
+    if (!name) {
+      throw new Error('No name provided for snapshot')
+    }
 
     try {
-      assert.deepEqual(parsed, snaps[name], message)
+      assert.deepEqual(result, snaps[name], message)
     } catch (err) {
       if (!snaps[name] || autofix) {
-        snaps[name] = parsed
+        snaps[name] = result
         log(`\nWriting snapshot for "${name}"`)
-        return writeSnaps(snaps, snapFilePath)
+        writeSnaps(snaps, snapFilePath)
       } else {
         log(options.howToFix)
         throw err
       }
     }
-  }
+  })
 }
 
-function writeSnaps(snaps, filePath) {
-  let result
-
-  try {
-    result = fs.writeFileSync(filePath, JSON.stringify(snaps, null, 2))
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      fs.mkdirSync(path.dirname(filePath))
-      return writeSnaps(snaps, filePath)
-    }
-    throw err
-  }
-
-  return result
-}
+module.exports.mocha = (_mocha) => ({
+  testFilePath: _mocha.test.parent.file,
+  getName: () => _mocha.test.title
+})
