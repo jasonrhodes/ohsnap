@@ -16,7 +16,18 @@ There are two functions you'll use with this library: the exported `polaroid` se
 
 ### polaroid()
 
-First, call the `polaroid` function with some setup options, usually in a test suite's `before` hook, to get a copy of the `snap` function you can use in your tests. It takes a single options hash with the following possible keys:
+First, call the `polaroid` function with some setup options, usually in a test suite's `before` hook, to get a copy of the `snap` function you can use in your tests. 
+
+```javascript
+describe('my test suite', function() {
+  let snap
+  
+  before(function() {
+    snap = polaroid(options)
+  }
+```
+
+It takes a single options hash with the following possible keys:
 
 **app** (required)
 
@@ -49,6 +60,12 @@ If true, broken snapshot tests will be rewritten and updated. You need to figure
 ### snap()
 
 Use the `snap` function itself to create snapshots inside of tests. You should return the result of the `snap` function if your test runner respects promises for async tests (if you need some kind of `done` function, uh, PRs welcome and stuff)
+
+```javascript
+it('should do some test things', function() {
+  return snap({ method: 'GET', path: '/my/sweet/api' }) // tada
+})
+```
 
 The `snap` function takes 2 arguments: some http options and some snap options.
 
