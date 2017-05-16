@@ -10,13 +10,15 @@ I really really really like Jest snapshot testing for React components, and afte
 
 ## Usage
 
-There are two functions you'll use with this library: the exported `polaroid` setup method, and the `snap` method used in tests.
+There are two functions you'll use with this library: the default exported setup method (e.g. `ohsnap`), and the method it returns that you use in tests (e.g. `snap`).
 
 ### ohsnap()
 
 First, call the `ohsnap` function with some setup options, usually in a test suite's `before` hook, to get a copy of a function you can use in your tests to compare snapshots. 
 
 ```javascript
+const ohsnap = require('ohsnap')
+
 describe('my test suite', function() {
   let snap
   
@@ -124,21 +126,15 @@ Here's basically what the example shows, but with a real API running:
 
 ```javascript
 const app = require('../app')
-const polaroid = require('polaroid')
+const ohsnap = require('ohsnap')
 
 describe('example snapshot tests', function() {
 
   let snap
 
   before(function() {
-    // not necessary to use mocha, but if you do, this works
-    const { testFilePath, getName } = polaroid.mocha(this)
-    snap = polaroid({
-      app,
-      testFilePath,
-      getName,
-      howToFix: 'Snapshot failed, to fix re-run with AUTOFIX=true',
-      autofix: Boolean(process.env.AUTOFIX)
+    snap = ohsnap.mocha(this, {
+      app
     })
   })
 
