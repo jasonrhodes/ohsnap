@@ -73,9 +73,13 @@ describe('some sweet tests', function() {
 })
 ```
 
-This will set up the snap directory and the `getName` function to use the `it` description for each test, which is usually really useful/nice.
+This will set up the snap directory, testFilePath, and the `getName` function (it uses the `it` description for each test), which is usually really useful/nice.
 
-### snap() (or whatever you call the function returned by `ohsnap()`)
+When you use the mocha helper, the only required field is the `app` itself.
+
+### snap() 
+
+_(or whatever you call the function returned by `ohsnap()`)_
 
 Use the function returned by `ohsnap()` (we'll call it `snap`) to create snapshots inside of tests. You should return the result of this `snap` function if your test runner respects promises for async tests (if you need some kind of `done` function, uh, PRs welcome and stuff)
 
@@ -122,13 +126,13 @@ The full example is in the [example folder](/example) (right?), which you can ru
 npm install && npm run examples
 ```
 
-Here's basically what the example shows, but with a real API running:
+The example is similar to this:
 
 ```javascript
 const app = require('../app')
 const ohsnap = require('ohsnap')
 
-describe('example snapshot tests', function() {
+describe('example snapshot tests (with mocha)', function() {
 
   let snap
 
@@ -156,5 +160,27 @@ describe('example snapshot tests', function() {
     })
   })
 
+})
+
+describe('some tests without mocha', function() {
+  
+  let snap
+  
+  before(function() {
+    snap = ohsnap({
+      app,
+      testFilePath: __filename
+    })
+  })
+  
+  it('should get a collection of people', function() {
+    return snap({
+      method: 'GET',
+      path: '/example/people'
+    }, {
+      name: 'Get a collection of people' // used for the snapshot name
+    })
+  })
+  
 })
 ```
