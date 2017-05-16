@@ -1,31 +1,27 @@
-# polaroid
+# oh snap!
 
-Declarative API response snapshotting tool based on Jest snapshot testing
+Snapshot tests for your NodeJS HTTP API responses, because it's cool and good to do this.
 
 ### Why?
 
-I really really really like Jest snapshot testing for React components, and after writing them for a while I realized it would be really useful for testing API responses, too. After all, API responses are big blocks of JSON alongside a status code and you want to be really sure those things never ever change. These are basically the ultimate API functional tests, in my opinion.
+I really really really like Jest snapshot testing for React components, and after writing them for a while I realized it would be really useful for testing HTTP API responses, too. After all, API responses are big blocks of JSON alongside a status code and you want to be really sure those things never ever change. These are basically the ultimate API functional tests, in my opinion.
 
 [blah blah blah jump to the example code](#example)
-
-### Current Name
-
-This is probably a bad idea for obvious reasons so I will probably rename it.
 
 ## Usage
 
 There are two functions you'll use with this library: the exported `polaroid` setup method, and the `snap` method used in tests.
 
-### polaroid()
+### ohsnap()
 
-First, call the `polaroid` function with some setup options, usually in a test suite's `before` hook, to get a copy of the `snap` function you can use in your tests. 
+First, call the `ohsnap` function with some setup options, usually in a test suite's `before` hook, to get a copy of a function you can use in your tests to compare snapshots. 
 
 ```javascript
 describe('my test suite', function() {
   let snap
   
   before(function() {
-    snap = polaroid(options)
+    snap = ohsnap(options)
   }
 ```
 
@@ -51,17 +47,35 @@ By default, snap files get placed in a `__snapshots__` directory next to the tes
 
 Whether or not to log messages about snapshot statuses (when a new one is created or updated, how to fix broken ones, etc.)
 
+**autofix** (optional, default `Boolean(process.env.AUTOFIX)`)
+
+If true, broken snapshot tests will be rewritten and updated. You can figure out how you want the user to do this but by default it works by re-running the test suite with `AUTOFIX=true` prepended.
+
 **howToFix** (optional)
 
 Optional string that will be printed to the console (if logging is turned on) whenever a test fails, usually to tell the user how to autofix the snapshot.
 
-**autofix** (optional, default `false`)
+### ohsnap.mocha()
 
-If true, broken snapshot tests will be rewritten and updated. You need to figure out how you want the user to do this -- in my example (below) it's by re-running the test suite with `AUTOFIX=true` prepended.
+If you're using mocha as your test runner, setup like this:
 
-### snap()
+```js
+describe('some sweet tests', function() {
+  let snap
+  
+  before(function() {
+    snap = ohsnap.mocha(this, options)
+  })
+    
+  // etc...
+})
+```
 
-Use the `snap` function itself to create snapshots inside of tests. You should return the result of the `snap` function if your test runner respects promises for async tests (if you need some kind of `done` function, uh, PRs welcome and stuff)
+This will set up the snap directory and the `getName` function to use the `it` description for each test, which is usually really useful/nice.
+
+### snap() (or whatever you call the function returned by `ohsnap()`)
+
+Use the function returned by `ohsnap()` (we'll call it `snap`) to create snapshots inside of tests. You should return the result of this `snap` function if your test runner respects promises for async tests (if you need some kind of `done` function, uh, PRs welcome and stuff)
 
 ```javascript
 it('should do some test things', function() {

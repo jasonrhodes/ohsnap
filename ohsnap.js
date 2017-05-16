@@ -5,14 +5,22 @@ const defaults = {
   testFilePath: false,
   getName: () => false,
   snapsDirectory: false,
-  logging: true,
-  autofix: false
+  logging: true
+}
+
+function prepareOptions(options = {}) {
+  const prepared = Object.assign({}, defaults, options)
+  const { testFilePath, snapsDirectory } = prepared
+  prepared.snapFilePath = getSnapPath(testFilePath, snapsDirectory)
+  if (prepared.autofix === undefined) {
+    prepared.autofix = Boolean(process.env.AUTOFIX)
+    prepared.howToFix = 'Snapshot failed, to fix re-run with AUTOFIX=true';
+  }
+  return prepared
 }
 
 module.exports = (options = {}) => {
-  options = Object.assign({}, defaults, options)
-  const { app, testFilePath, getName, snapsDirectory, logging, autofix } = options
-  const snapFilePath = getSnapPath(testFilePath, snapsDirectory)
+  const { app, snapFilePath, getName, logging, autofix, howToFix = null } = prepareOptions(options)
   let snaps = {}
 
   function log(...args) {
@@ -42,14 +50,17 @@ module.exports = (options = {}) => {
         log(`\nWriting snapshot for "${name}"`)
         writeSnaps(snaps, snapFilePath)
       } else {
-        log(options.howToFix)
+        log(howToFix)
         throw err
       }
     }
   })
 }
 
-module.exports.mocha = (_mocha) => ({
-  testFilePath: _mocha.test.parent.file,
-  getName: () => _mocha.test.title
-})
+module.exports.mocha = (_mocha, options = {}) => {
+  const mochaOptions = {
+    testFilePath: _mocha.test.parent.file,
+    getName: () => _mocha.test.title
+  }
+  return module.exports(Object.assign(mochaOptions, options))
+}

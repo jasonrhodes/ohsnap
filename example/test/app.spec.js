@@ -1,19 +1,12 @@
 const app = require('../app')
-const polaroid = require('../../polaroid')
+const ohsnap = require('../../ohsnap')
 
 describe('example snapshot tests', function() {
 
   let snap
 
   before(function() {
-    const { testFilePath, getName } = polaroid.mocha(this)
-    snap = polaroid({
-      app,
-      testFilePath,
-      getName,
-      howToFix: 'Snapshot failed, to fix re-run with AUTOFIX=true',
-      autofix: Boolean(process.env.AUTOFIX)
-    })
+    snap = ohsnap.mocha(this, { app })
   })
 
   it('should get a collection of people', function() {

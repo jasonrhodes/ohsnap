@@ -1,8 +1,8 @@
 {
-  "name": "polaroid",
+  "name": "ohsnap",
   "version": "1.0.1",
   "description": "",
-  "main": "polaroid.js",
+  "main": "ohsnap.js",
   "dependencies": {
     "chai": "^3.5.0",
     "express": "^4.14.1",
@@ -21,13 +21,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jasonrhodes/polaroid.git"
+    "url": "git+https://github.com/jasonrhodes/ohsnap.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jasonrhodes/polaroid/issues"
+    "url": "https://github.com/jasonrhodes/ohsnap/issues"
   },
-  "homepage": "https://github.com/jasonrhodes/polaroid#readme"
+  "homepage": "https://github.com/jasonrhodes/ohsnap#readme"
 }
