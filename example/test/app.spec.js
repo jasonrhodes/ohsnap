@@ -43,6 +43,13 @@ describe('example snapshot tests', function() {
       }
     })
   })
+  
+  it('should ignore query params', function() {
+    return snap({
+      method: 'GET',
+      path: '/example/people?what=whocares'
+    })
+  })
 
   it('should fail if wrong keys are used', function() {
     return snap({

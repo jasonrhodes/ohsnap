@@ -1,4 +1,5 @@
 const assert = require('assert')
+const querystring = require('querystring')
 const makeRequest = require('./lib/makeRequest')
 const { getSnapPath, getSnaps, writeSnaps } = require('./lib/snap-helpers')
 const defaults = {
@@ -37,20 +38,32 @@ module.exports = (options = {}) => {
   }
 
   return (request, { name = getName(), message = 'Result did not match stored snapshot.' } = {}) => makeRequest(app, request).then(({ status, body }) => {
-    let result
     const response = { status, body }
+    let result = response
     
     if (includeRequest) {
-      const { path, body = false } = request
+      let { path, query = false } = request
+      let splitPath = path.split('?')
+      const { method, body = false } = request
+      
+      if (splitPath.length > 1) {
+        path = splitPath.shift()
+        query = querystring.parse(splitPath.join('?'))
+      }
+      
       result = {
-        request: { path, body },
+        request: { path, method, body, query },
         response
       }
+      
       if (!body) {
         delete result.request.body
       }
-    } else {
-      result = response
+      
+      if (!query) {
+        delete result.request.query
+      }
+      
     }
 
     if (!name) {

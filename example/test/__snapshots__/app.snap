@@ -1,83 +1,75 @@
 {
   "should get a collection of people": {
-    "request": {
-      "path": "/example/people"
-    },
-    "response": {
-      "status": 200,
-      "body": [
-        {
-          "id": "001",
-          "name": "Jess",
-          "age": 32
-        },
-        {
-          "id": "002",
-          "name": "Soso",
-          "age": 19
-        },
-        {
-          "id": "003",
-          "name": "Mawi",
-          "age": 57
-        }
-      ]
-    }
+    "status": 200,
+    "body": [
+      {
+        "name": "Jess",
+        "age": 32,
+        "id": "001"
+      },
+      {
+        "name": "Soso",
+        "age": 19,
+        "id": "002"
+      },
+      {
+        "name": "Mawi",
+        "age": 57,
+        "id": "003"
+      }
+    ]
   },
   "should get a person": {
-    "request": {
-      "path": "/example/people/001"
-    },
-    "response": {
-      "status": 200,
-      "body": {
-        "id": "001",
-        "name": "Jess",
-        "age": 32
-      }
+    "status": 200,
+    "body": {
+      "name": "Jess",
+      "age": 32,
+      "id": "001"
     }
   },
   "should create a new person": {
-    "request": {
-      "path": "/example/people",
-      "body": {
-        "name": "Jo",
-        "age": 19
-      }
-    },
-    "response": {
-      "status": 201,
-      "body": {
+    "status": 201,
+    "body": {
+      "name": "Jo",
+      "age": 19,
+      "id": "004"
+    }
+  },
+  "should error when it can't find a person": {
+    "status": 404,
+    "body": {
+      "message": "Person with ID nope not found"
+    }
+  },
+  "should fail if wrong keys are used": {
+    "status": 400,
+    "body": {
+      "message": "Must provide valid keys, allowed keys are name, age"
+    }
+  },
+  "should ignore query params": {
+    "status": 200,
+    "body": [
+      {
+        "name": "Jess",
+        "age": 32,
+        "id": "001"
+      },
+      {
+        "name": "Soso",
+        "age": 19,
+        "id": "002"
+      },
+      {
+        "name": "Mawi",
+        "age": 57,
+        "id": "003"
+      },
+      {
         "name": "Jo",
         "age": 19,
         "id": "004"
       }
-    }
-  },
-  "should error when it can't find a person": {
-    "request": {
-      "path": "/example/people/nope"
-    },
-    "response": {
-      "status": 404,
-      "body": {
-        "message": "Person with ID nope not found"
-      }
-    }
-  },
-  "should fail if wrong keys are used": {
-    "request": {
-      "path": "/example/people",
-      "body": {
-        "name": "Jo",
-        "weight": 150
-      }
-    },
-    "response": {
-      "status": 400,
-      "body": {
-        "message": "Must provide valid keys, allowed keys are name, age"
-      }
-    }
+    ]
   }
 }
