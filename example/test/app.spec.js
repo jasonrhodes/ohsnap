@@ -6,7 +6,10 @@ describe('example snapshot tests', function() {
   let snap
 
   before(function() {
-    snap = ohsnap.mocha(this, { app })
+    snap = ohsnap.mocha(this, { 
+      app,
+      includeRequest: Boolean(process.env.INCLUDE_REQUEST)
+    })
   })
 
   it('should get a collection of people', function() {
@@ -30,7 +33,7 @@ describe('example snapshot tests', function() {
     })
   })
 
-  it(`should create a new person`, function() {
+  it('should create a new person', function() {
     return snap({
       method: 'POST',
       path: '/example/people',
@@ -41,7 +44,7 @@ describe('example snapshot tests', function() {
     })
   })
 
-  it(`should fail if wrong keys are used`, function() {
+  it('should fail if wrong keys are used', function() {
     return snap({
       method: 'POST',
       path: '/example/people',

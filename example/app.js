@@ -1,33 +1,36 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
-const allowedKeys = ['name', 'age']
+const validateKeys = require('./lib/validate-keys')
+const PeopleModel = require('./lib/people')
+const people = new PeopleModel()
 
 module.exports = app
 
-let db = []
-let id = 1
-
-// seed "db"
-db.push({ id: getId(), name: 'Jess', age: 32 })
-db.push({ id: getId(), name: 'Soso', age: 24 })
-db.push({ id: getId(), name: 'Mawi', age: 40 })
+// seed people "db"
+people.batchInsert([
+  { name: 'Jess', age: 32 },
+  { name: 'Soso', age: 19 },
+  { name: 'Mawi', age: 57 }
+])
 
 // default content type to JSON if not specified
 app.use((req, res, next) => {
-  req.headers['content-type'] = 'application/json'
+  if (!req.headers['content-type']) {
+    req.headers['content-type'] = 'application/json'
+  }
   next()
 })
 
 app.use(bodyParser.json())
 
 app.get('/example/people', (req, res) => {
-  res.status(200).json(db)
+  res.status(200).json(people.list())
 })
 
 app.get('/example/people/:id', (req, res) => {
   const { id } = req.params
-  const person = findPerson(id)
+  const person = people.findOne(id)
   if (person) {
     res.status(200).json(person)
   } else {
@@ -37,53 +40,21 @@ app.get('/example/people/:id', (req, res) => {
 
 app.post('/example/people', validateKeys, (req, res) => {
   const person = req.body
-  person.id = getId()
-  db.push(person)
-
+  people.insert(person)
   res.status(201).json(person)
 })
 
 app.put('/example/people/:id', validateKeys, (req, res) => {
   const { id } = req.params
   const update = req.body
-
-  delete update.id
-
-  db = db.map((person) => {
-    if (person.id === id) {
-      return Object.assign({}, person, update)
-    }
-    return person
-  })
-
-  res.status(200).json(findPerson(id))
+  people.update(id, update)
+  res.status(200).json(people.findOne(id))
 })
 
 app.delete('/example/people/:id', (req, res) => {
   const { id } = req.params
-  db = db.filter((person) => person.id !== id)
-
+  people.delete(id)
   res.sendStatus(204)
 })
 
-app.listen(6789) // necessary for supertest?
-
-function findPerson(id) {
-  return db.find((person) => person.id === id)
-}
-
-function getId() {
-  return `00${id++}`
-}
-
-function validateKeys(req, res, next) {
-  const keys = Object.keys(req.body)
-  const valid = keys.length && keys.every((key) => allowedKeys.includes(key))
-
-  if (!valid) {
-    res.status(400).json({ message: `Must provide valid keys, allowed keys are ${allowedKeys.join(', ')}`})
-    return
-  }
-
-  next()
-}
+app.listen(6789)

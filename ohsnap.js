@@ -5,7 +5,8 @@ const defaults = {
   testFilePath: false,
   getName: () => false,
   snapsDirectory: false,
-  logging: true
+  logging: true,
+  includeRequest: false
 }
 
 function prepareOptions(options = {}) {
@@ -20,7 +21,7 @@ function prepareOptions(options = {}) {
 }
 
 module.exports = (options = {}) => {
-  const { app, snapFilePath, getName, logging, autofix, howToFix = null } = prepareOptions(options)
+  const { app, snapFilePath, getName, logging, autofix, howToFix = null, includeRequest } = prepareOptions(options)
   let snaps = {}
 
   function log(...args) {
@@ -36,7 +37,21 @@ module.exports = (options = {}) => {
   }
 
   return (request, { name = getName(), message = 'Result did not match stored snapshot.' } = {}) => makeRequest(app, request).then(({ status, body }) => {
-    const result = { status, body }
+    let result
+    const response = { status, body }
+    
+    if (includeRequest) {
+      const { path, body = false } = request
+      result = {
+        request: { path, body },
+        response
+      }
+      if (!body) {
+        delete result.request.body
+      }
+    } else {
+      result = response
+    }
 
     if (!name) {
       throw new Error('No name provided for snapshot')
