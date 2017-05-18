@@ -1,10 +1,10 @@
 # oh snap!
 
-Snapshot tests for your NodeJS HTTP API responses, because it's cool and good to do this.
+Declarative snapshot testing for your NodeJS APIs because it's cool and good to do this.
 
-### Why?
+### But why?
 
-I really really really like Jest snapshot testing for React components, and after writing them for a while I realized it would be really useful for testing HTTP API responses, too. After all, API responses are big blocks of JSON alongside a status code and you want to be really sure those things never ever change. These are basically the ultimate API functional tests, in my opinion.
+So I really like Jest snapshot testing for React components, and after writing them for a while I realized it would be really useful for testing our HTTP API responses, too (express in our case). After all, API responses are big blocks of JSON alongside a status code and you want to be really sure those things never ever change. Snapshots are basically the ultimate API functional tests, in my opinion.
 
 [blah blah blah jump to the example code](#example)
 
@@ -123,18 +123,19 @@ This will set up the snap directory, testFilePath, and the `getName` function (i
 
 When you use the mocha helper, the only required field is the `app` itself.
 
-### ohsnap.tape()
+### ohsnap.tap()
 
-If you use tape, the tape helper is your friend. You have to pass in the app and the testFilePath during setup, but it will give you a snap function that accepts the `t` reference as the first arg, then the other 2 regular args.
+If you use tap or tape, the tap helper is your friend. You have to pass in the app and the testFilePath during setup, but it will give you a snap function that accepts the `t` reference as the first arg, then the other 2 regular args.
 
 ```js
-const it = require('tape')
+const it = require('tape') // or: const tap = require('tap')
 const app = require('../app')
 const snap = require('../../ohsnap').tape({
   app,
   testFilePath: __filename
 })
 
+// if tap, use tap.test() here
 it('should get a collection of people', function (t) {  
   return snap(t, {
     method: 'GET',
@@ -145,7 +146,7 @@ it('should get a collection of people', function (t) {
 })
 ```
 
-I recommend using [tap-difflet](https://github.com/namuol/tap-difflet) to output your snapshot results in this case. 
+I recommend using [tap-difflet](https://github.com/namuol/tap-difflet) to output your snapshot results if you're using tape. 
 
 ## Examples
 
@@ -212,10 +213,10 @@ describe('some bdd tests without mocha', function() {
   
 })
 
-// and tape tests
+// tape or tap tests (basically the same)
 const it = require('tape')
 const app = require('../app')
-const snap = require('../../ohsnap').tape({
+const snap = require('../../ohsnap').tap({
   app,
   testFilePath: __filename
 })

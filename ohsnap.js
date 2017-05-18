@@ -95,7 +95,7 @@ module.exports.mocha = (_mocha, options = {}) => {
   return module.exports(Object.assign(mochaOptions, options))
 }
 
-module.exports.tape = (options) => {
+module.exports.tap = (options) => {
   const snap = module.exports(options)
   return (t, ...args) => {
     t.plan(1)
