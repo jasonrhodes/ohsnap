@@ -1,7 +1,7 @@
 const app = require('../app')
 const ohsnap = require('../../ohsnap')
 
-describe('example snapshot tests', function() {
+describe('example mocha snapshot tests', function() {
 
   let snap
 

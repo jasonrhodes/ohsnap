@@ -1,23 +1,26 @@
 {
   "name": "ohsnap",
   "version": "1.1.1",
-  "description": "",
+  "description": "Declarative snapshot testing for express APIs",
   "main": "ohsnap.js",
   "dependencies": {
+    "supertest": "^3.0.0"
+  },
+  "devDependencies": {
     "chai": "^3.5.0",
     "express": "^4.14.1",
     "proxyquire": "^1.7.11",
     "sinon": "^1.17.7",
-    "sinon-chai": "^2.8.0"
-  },
-  "devDependencies": {
+    "sinon-chai": "^2.8.0",
     "body-parser": "^1.16.1",
     "mocha": "^3.2.0",
-    "supertest": "^3.0.0"
+    "tap-difflet": "^0.7.0",
+    "tap-spec": "^4.1.1",
+    "tape": "^4.6.3"
   },
   "scripts": {
     "test": "mocha ./test",
-    "examples": "mocha ./example/test"
+    "examples": "mocha ./example/test/mocha.spec.js && tape ./example/test/tape.spec.js | tap-difflet"
   },
   "repository": {
     "type": "git",

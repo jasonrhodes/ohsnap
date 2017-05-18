@@ -57,4 +57,6 @@ app.delete('/example/people/:id', (req, res) => {
   res.sendStatus(204)
 })
 
-app.listen(6789)
+if (require.main === module) {
+  app.listen(6789)
+}

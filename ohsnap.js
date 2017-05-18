@@ -79,6 +79,8 @@ module.exports = (options = {}) => {
         writeSnaps(snaps, snapFilePath)
       } else {
         log(howToFix)
+        err.expected = snaps[name]
+        err.actual = result
         throw err
       }
     }
@@ -91,4 +93,20 @@ module.exports.mocha = (_mocha, options = {}) => {
     getName: () => _mocha.test.title
   }
   return module.exports(Object.assign(mochaOptions, options))
+}
+
+module.exports.tape = (options) => {
+  const snap = module.exports(options)
+  return (t, ...args) => {
+    t.plan(1)
+    return snap(...args)
+      .then(() => t.pass('Snapshot matched'))
+      .catch((err) => {
+        if (err.actual && err.expected) {
+          t.deepEqual(err.actual, err.expected)
+        } else {
+          throw err
+        }
+      })
+  }
 }

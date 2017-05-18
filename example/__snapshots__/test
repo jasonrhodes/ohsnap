@@ -1,0 +1,22 @@
+{
+  "tape: should get a collection of people": {
+    "status": 200,
+    "body": [
+      {
+        "name": "Jess",
+        "age": 32,
+        "id": "001"
+      },
+      {
+        "name": "Soso",
+        "age": 19,
+        "id": "002"
+      },
+      {
+        "name": "Mawi",
+        "age": 57,
+        "id": "003"
+      }
+    ]
+  }
+}

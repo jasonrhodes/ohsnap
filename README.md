@@ -33,13 +33,17 @@ It takes a single options hash with the following possible keys:
 
 Your API app object, which can be anything that [supertest](https://github.com/visionmedia/supertest#example) says it can be. (As of now, it says: "You may pass an http.Server, or a Function to request() - if the server is not already listening for connections then it is bound to an ephemeral port for you so there is no need to keep track of ports.")
 
-**testFilePath** (required)
+**testFilePath** (required, if not using the mocha helper)
 
 The full path to the current test file, which will be used to name the snap file if it doesn't already exist. i.e. `my-test.spec.js -> my-test.snap` Note: this needs to be the full path to the file, not just the file name.
 
+\*The mocha helper takes care of this for you.
+
 **getName** (optional)
 
-Function that returns the name for a given snapshot. The mocha helper sets this to the name of the current `it`, which works really well. If you're not using mocha, you can figure out a different way to get that value or just skip this and pass in the snap names in each test directly.
+Function that returns the name for a given snapshot. If you're not using mocha, you can figure out a different way to get that value or just skip this and pass in the snap names in each test directly.
+
+\*The mocha helper takes care of this for you.
 
 **snapsDirectory** (optional)
 
@@ -56,26 +60,6 @@ If true, broken snapshot tests will be rewritten and updated. You can figure out
 **howToFix** (optional)
 
 Optional string that will be printed to the console (if logging is turned on) whenever a test fails, usually to tell the user how to autofix the snapshot.
-
-### ohsnap.mocha()
-
-If you're using mocha as your test runner, setup like this:
-
-```js
-describe('some sweet tests', function() {
-  let snap
-  
-  before(function() {
-    snap = ohsnap.mocha(this, options)
-  })
-    
-  // etc...
-})
-```
-
-This will set up the snap directory, testFilePath, and the `getName` function (it uses the `it` description for each test), which is usually really useful/nice.
-
-When you use the mocha helper, the only required field is the `app` itself.
 
 ### snap() 
 
@@ -119,7 +103,51 @@ If you didn't pass a `getName` function in earlier, or if you want to override i
 
 This is the message that `assert` will print if the snap didn't match the stored version. There's a default so this is probably not necessary.
 
-## Example
+### ohsnap.mocha()
+
+If you're using mocha as your test runner, setup like this:
+
+```js
+describe('some sweet tests', function() {
+  let snap
+  
+  before(function() {
+    snap = ohsnap.mocha(this, options)
+  })
+    
+  // etc...
+})
+```
+
+This will set up the snap directory, testFilePath, and the `getName` function (it uses the `it` description for each test), which is usually really useful/nice.
+
+When you use the mocha helper, the only required field is the `app` itself.
+
+### ohsnap.tape()
+
+If you use tape, the tape helper is your friend. You have to pass in the app and the testFilePath during setup, but it will give you a snap function that accepts the `t` reference as the first arg, then the other 2 regular args.
+
+```js
+const it = require('tape')
+const app = require('../app')
+const snap = require('../../ohsnap').tape({
+  app,
+  testFilePath: __filename
+})
+
+it('should get a collection of people', function (t) {  
+  return snap(t, {
+    method: 'GET',
+    path: '/example/people'
+  }, { 
+    name: 'should get a collection of people' 
+  })
+})
+```
+
+I recommend using [tap-difflet](https://github.com/namuol/tap-difflet) to output your snapshot results in this case. 
+
+## Examples
 
 The full example is in the [example folder](/example) (right?), which you can run by cloning the repo and running:
 ```
@@ -162,7 +190,7 @@ describe('example snapshot tests (with mocha)', function() {
 
 })
 
-describe('some tests without mocha', function() {
+describe('some bdd tests without mocha', function() {
   
   let snap
   
@@ -182,5 +210,22 @@ describe('some tests without mocha', function() {
     })
   })
   
+})
+
+// and tape tests
+const it = require('tape')
+const app = require('../app')
+const snap = require('../../ohsnap').tape({
+  app,
+  testFilePath: __filename
+})
+
+it('should get a collection of people', function (t) {  
+  return snap(t, {
+    method: 'GET',
+    path: '/example/people'
+  }, { 
+    name: 'should get a collection of people' 
+  })
 })
 ```
