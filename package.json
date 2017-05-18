@@ -1,6 +1,6 @@
 {
   "name": "ohsnap",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Declarative snapshot testing for NodeJS APIs",
   "main": "ohsnap.js",
   "dependencies": {
