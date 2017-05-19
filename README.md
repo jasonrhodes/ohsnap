@@ -6,7 +6,7 @@ Declarative snapshot testing for your NodeJS APIs because it's cool and good to 
 
 So I really like Jest snapshot testing for React components, and after writing them for a while I realized it would be really useful for testing our HTTP API responses, too (express in our case). After all, API responses are big blocks of JSON alongside a status code and you want to be really sure those things never ever change. Snapshots are basically the ultimate API functional tests, in my opinion.
 
-[blah blah blah jump to the example code](#example)
+[blah blah blah jump to the example code](#examples)
 
 ## Usage
 
